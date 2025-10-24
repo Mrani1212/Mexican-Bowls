@@ -210,6 +210,35 @@
             margin-bottom: 0.2rem;
         }
         
+        .special-requests {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: #fff9e6;
+            border-radius: 8px;
+            border-left: 4px solid #ffc107;
+        }
+        
+        .special-requests h3 {
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+        
+        .request-item {
+            padding: 0.75rem;
+            margin-bottom: 0.75rem;
+            background: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .instructions {
+            background-color: #e8f4fd;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border-left: 4px solid var(--primary);
+        }
+        
         footer {
             text-align: center;
             margin-top: 3rem;
@@ -255,6 +284,14 @@
                 <input type="file" id="fileInput" accept=".csv" style="display: none;">
                 <button class="btn" id="browseBtn" style="margin-top: 1rem;">Browse Files</button>
             </div>
+            <div class="instructions">
+                <h3>How to export your Google Forms data:</h3>
+                <ol>
+                    <li>Open your Google Forms response sheet</li>
+                    <li>Go to File → Download → Comma-separated values (.csv)</li>
+                    <li>Upload the downloaded CSV file here</li>
+                </ol>
+            </div>
             <div style="text-align: center;">
                 <button class="btn btn-accent" id="processBtn" disabled>Process Orders</button>
             </div>
@@ -278,20 +315,27 @@
                     <!-- Tally rows will be inserted here -->
                 </tbody>
             </table>
+            
+            <div class="special-requests" id="specialRequestsSection">
+                <h3>Special Requests & Custom Orders</h3>
+                <div id="specialRequestsList">
+                    <!-- Special requests will be inserted here -->
+                </div>
+            </div>
         </div>
         
         <div class="card">
             <h2>Menu Items & Components</h2>
             <div class="menu-grid">
                 <div class="menu-item">
-                    <h3>Basic Bowl</h3>
+                    <h3>Basic Bowl - 20 SAR</h3>
                     <p>Contains:</p>
                     <ul class="components-list">
                         <li>1 Bowl</li>
                     </ul>
                 </div>
                 <div class="menu-item">
-                    <h3>Regular Bowl</h3>
+                    <h3>Regular Bowl - 25 SAR</h3>
                     <p>Contains:</p>
                     <ul class="components-list">
                         <li>1 Bowl</li>
@@ -300,7 +344,7 @@
                     </ul>
                 </div>
                 <div class="menu-item">
-                    <h3>Large Bowl Combo</h3>
+                    <h3>Large Combo Bowl - 35 SAR</h3>
                     <p>Contains:</p>
                     <ul class="components-list">
                         <li>1 Bowl</li>
@@ -312,14 +356,14 @@
                     </ul>
                 </div>
                 <div class="menu-item">
-                    <h3>Burrito</h3>
+                    <h3>Burrito - 15 SAR</h3>
                     <p>Contains:</p>
                     <ul class="components-list">
                         <li>1 Burrito</li>
                     </ul>
                 </div>
                 <div class="menu-item">
-                    <h3>Burrito Combo</h3>
+                    <h3>Burrito Combo - 20 SAR</h3>
                     <p>Contains:</p>
                     <ul class="components-list">
                         <li>1 Burrito</li>
@@ -331,43 +375,43 @@
             <h3 style="margin-top: 2rem;">Side Options</h3>
             <div class="menu-grid">
                 <div class="menu-item">
-                    <h3>Extra Protein</h3>
+                    <h3>Extra Protein - 5 SAR</h3>
                     <p>Contains: 1 Extra Protein</p>
                 </div>
                 <div class="menu-item">
-                    <h3>Chips and Salsa</h3>
+                    <h3>Chips and Salsa - 5 SAR</h3>
                     <p>Contains: 1 Chips, 1 Salsa</p>
                 </div>
                 <div class="menu-item">
-                    <h3>Iced Tea</h3>
+                    <h3>Iced Tea - 5 SAR</h3>
                     <p>Contains: 1 Iced Tea</p>
                 </div>
                 <div class="menu-item">
-                    <h3>Guac</h3>
+                    <h3>Guac - 6 SAR</h3>
                     <p>Contains: 1 Guacamole</p>
                 </div>
                 <div class="menu-item">
-                    <h3>Salsa</h3>
+                    <h3>Salsa - 5 SAR</h3>
                     <p>Contains: 1 Salsa</p>
                 </div>
                 <div class="menu-item">
-                    <h3>Sour Cream</h3>
+                    <h3>Sour Cream - 4 SAR</h3>
                     <p>Contains: 1 Sour Cream</p>
                 </div>
                 <div class="menu-item">
-                    <h3>Extra Fried Onion</h3>
+                    <h3>Extra Fried Onion - 3 SAR</h3>
                     <p>Contains: 1 Extra Fried Onion</p>
                 </div>
                 <div class="menu-item">
-                    <h3>Extra Cheese</h3>
+                    <h3>Extra Cheese - 5 SAR</h3>
                     <p>Contains: 1 Extra Cheese</p>
                 </div>
                 <div class="menu-item">
-                    <h3>Extra Roasted Pepper/Corn Mix</h3>
+                    <h3>Extra Roasted Pepper/Corn Mix - 4 SAR</h3>
                     <p>Contains: 1 Extra Roasted Pepper/Corn Mix</p>
                 </div>
                 <div class="menu-item">
-                    <h3>Extra Pico de Gallo</h3>
+                    <h3>Extra Pico de Gallo - 5 SAR</h3>
                     <p>Contains: 1 Extra Pico de Gallo</p>
                 </div>
             </div>
@@ -385,13 +429,13 @@
         const menuItems = {
             "basic bowl": { bowl: 1 },
             "regular bowl": { bowl: 1, sour_cream: 1, salsa: 1 },
-            "large bowl combo": { bowl: 1, sour_cream: 1, salsa: 1, guacamole: 1, chips: 1, iced_tea: 1 },
+            "large combo bowl": { bowl: 1, sour_cream: 1, salsa: 1, guacamole: 1, chips: 1, iced_tea: 1 },
             "burrito": { burrito: 1 },
             "burrito combo": { burrito: 1, sour_cream: 1 },
             // Side options
             "extra protein": { extra_protein: 1 },
             "chips and salsa": { chips: 1, salsa: 1 },
-            "iced tea": { iced_tea: 1 },
+            "ice tea": { iced_tea: 1 },
             "guac": { guacamole: 1 },
             "salsa": { salsa: 1 },
             "sour cream": { sour_cream: 1 },
@@ -409,6 +453,8 @@
         const resultsSection = document.getElementById('resultsSection');
         const summaryGrid = document.getElementById('summaryGrid');
         const tallyBody = document.getElementById('tallyBody');
+        const specialRequestsSection = document.getElementById('specialRequestsSection');
+        const specialRequestsList = document.getElementById('specialRequestsList');
         
         let csvData = null;
         
@@ -472,9 +518,9 @@
             
             reader.onload = function(e) {
                 const csvText = e.target.result;
-                const orders = parseCSV(csvText);
+                const { orders, specialRequests } = parseCSV(csvText);
                 const tally = tallyOrders(orders);
-                displayResults(tally);
+                displayResults(tally, specialRequests);
             };
             
             reader.readAsText(csvData);
@@ -483,43 +529,80 @@
         function parseCSV(csvText) {
             const lines = csvText.split('\n');
             const orders = [];
+            const specialRequests = [];
             
-            // Find the column with order information
+            // Find the column indices for each menu item
             const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
-            let orderColumnIndex = -1;
             
-            // Try to find the order column by common header names
-            const possibleHeaders = ['order', 'what would you like to order', 'menu selection', 'food order'];
-            for (let i = 0; i < headers.length; i++) {
-                if (possibleHeaders.some(ph => headers[i].includes(ph))) {
-                    orderColumnIndex = i;
-                    break;
+            // Map column names to our menu items
+            const columnMapping = {
+                "basic bowl": "basic bowl",
+                "regular bowl": "regular bowl", 
+                "large combo bowl": "large combo bowl",
+                "burrito": "burrito",
+                "burrito combo": "burrito combo",
+                "extra protein": "extra protein",
+                "chips and salsa": "chips and salsa",
+                "ice tea": "ice tea",
+                "guac": "guac",
+                "salsa": "salsa",
+                "sour cream": "sour cream",
+                "extra fried onion": "extra fried onion",
+                "extra cheese": "extra cheese",
+                "extra roasted pepper/corn mix": "extra roasted pepper/corn mix",
+                "extra pico de gallo": "extra pico de gallo"
+            };
+            
+            // Find column indices
+            const columnIndices = {};
+            for (const [header, menuItem] of Object.entries(columnMapping)) {
+                for (let i = 0; i < headers.length; i++) {
+                    if (headers[i].includes(header)) {
+                        columnIndices[menuItem] = i;
+                        break;
+                    }
                 }
             }
             
-            // If we can't find a specific order column, use the first data column
-            if (orderColumnIndex === -1) {
-                orderColumnIndex = 0;
+            // Find special requests column
+            let specialRequestsIndex = -1;
+            for (let i = 0; i < headers.length; i++) {
+                if (headers[i].includes("special requests")) {
+                    specialRequestsIndex = i;
+                    break;
+                }
             }
             
             // Process each line (skip header)
             for (let i = 1; i < lines.length; i++) {
                 if (lines[i].trim() === '') continue;
                 
-                const cells = lines[i].split(',').map(c => c.trim().toLowerCase());
-                if (cells.length > orderColumnIndex) {
-                    const orderText = cells[orderColumnIndex];
-                    
-                    // Try to identify which menu items are in this order
-                    for (const itemName in menuItems) {
-                        if (orderText.includes(itemName)) {
-                            orders.push(itemName);
+                const cells = lines[i].split(',').map(c => c.trim());
+                
+                // Process menu items
+                for (const [menuItem, index] of Object.entries(columnIndices)) {
+                    if (index !== undefined && cells[index] && !isNaN(cells[index]) && cells[index] !== '') {
+                        const quantity = parseInt(cells[index]);
+                        for (let j = 0; j < quantity; j++) {
+                            orders.push(menuItem);
                         }
                     }
                 }
+                
+                // Process special requests
+                if (specialRequestsIndex !== -1 && cells[specialRequestsIndex] && 
+                    cells[specialRequestsIndex] !== '' && 
+                    !cells[specialRequestsIndex].toLowerCase().includes("custom/write in special request") &&
+                    !cells[specialRequestsIndex].toLowerCase().includes("custom/ write in special request")) {
+                    
+                    specialRequests.push({
+                        text: cells[specialRequestsIndex],
+                        row: i
+                    });
+                }
             }
             
-            return orders;
+            return { orders, specialRequests };
         }
         
         function tallyOrders(orders) {
@@ -549,16 +632,20 @@
             return tally;
         }
         
-        function displayResults(tally) {
+        function displayResults(tally, specialRequests) {
             // Show the results section
             resultsSection.style.display = 'block';
             
             // Clear previous results
             summaryGrid.innerHTML = '';
             tallyBody.innerHTML = '';
+            specialRequestsList.innerHTML = '';
             
             // Create summary cards
             for (const item in tally) {
+                // Skip items with zero quantity
+                if (tally[item] === 0) continue;
+                
                 // Summary card
                 const card = document.createElement('div');
                 card.className = 'summary-card';
@@ -575,6 +662,21 @@
                     <td>${tally[item]}</td>
                 `;
                 tallyBody.appendChild(row);
+            }
+            
+            // Display special requests
+            if (specialRequests.length > 0) {
+                specialRequestsSection.style.display = 'block';
+                specialRequests.forEach(request => {
+                    const requestItem = document.createElement('div');
+                    requestItem.className = 'request-item';
+                    requestItem.innerHTML = `
+                        <strong>Order ${request.row}:</strong> ${request.text}
+                    `;
+                    specialRequestsList.appendChild(requestItem);
+                });
+            } else {
+                specialRequestsSection.style.display = 'none';
             }
             
             // Scroll to results

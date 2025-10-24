@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Order Tally System</title>
+    <style>
+        :root {
+            --primary: #4a6fa5;
+            --secondary: #6b8cbc;
+            --accent: #ff7e5f;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --success: #28a745;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 2rem 0;
+            text-align: center;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .card h2 {
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .upload-area {
+            border: 2px dashed #ccc;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .upload-area:hover {
+            border-color: var(--primary);
+            background-color: rgba(74, 111, 165, 0.05);
+        }
+        
+        .upload-area.highlight {
+            border-color: var(--accent);
+            background-color: rgba(255, 126, 95, 0.1);
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        .btn-accent {
+            background: var(--accent);
+        }
+        
+        .btn-accent:hover {
+            background: #ff9670;
+        }
+        
+        .results {
+            display: none;
+        }
+        
+        .tally-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        
+        .tally-table th, .tally-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .tally-table th {
+            background-color: var(--light);
+            color: var(--primary);
+            font-weight: 600;
+        }
+        
+        .tally-table tr:hover {
+            background-color: rgba(74, 111, 165, 0.05);
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .summary-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            border-top: 4px solid var(--primary);
+        }
+        
+        .summary-card h3 {
+            color: var(--dark);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .summary-card .count {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .menu-item {
+            background: var(--light);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .menu-item h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+        
+        .menu-item p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 1.5rem;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .summary-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Food Order Tally System</h1>
+            <p class="subtitle">Upload your Google Forms data and get instant breakdown of order components</p>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div class="card">
+            <h2>Upload Your Orders</h2>
+            <div class="upload-area" id="uploadArea">
+                <div class="upload-icon">📊</div>
+                <h3>Upload Google Forms CSV</h3>
+                <p>Drag & drop your CSV file here or click to browse</p>
+                <input type="file" id="fileInput" accept=".csv" style="display: none;">
+                <button class="btn" id="browseBtn" style="margin-top: 1rem;">Browse Files</button>
+            </div>
+            <div style="text-align: center;">
+                <button class="btn btn-accent" id="processBtn" disabled>Process Orders</button>
+            </div>
+        </div>
+        
+        <div class="card results" id="resultsSection">
+            <h2>Order Breakdown</h2>
+            <div class="summary-grid" id="summaryGrid">
+                <!-- Summary cards will be inserted here -->
+            </div>
+            
+            <h3 style="margin-top: 2rem;">Detailed Tally</h3>
+            <table class="tally-table" id="tallyTable">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody id="tallyBody">
+                    <!-- Tally rows will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="card">
+            <h2>Menu Items & Components</h2>
+            <div class="menu-item">
+                <h3>Basic Bowl</h3>
+                <p>Contains: 1 Bowl</p>
+            </div>
+            <div class="menu-item">
+                <h3>Regular Bowl</h3>
+                <p>Contains: 1 Bowl, 1 Sour Cream, 1 Salsa</p>
+            </div>
+            <div class="menu-item">
+                <h3>Large Bowl Combo</h3>
+                <p>Contains: 1 Bowl, 1 Sour Cream, 1 Salsa, 1 Guacamole, 1 Chips, 1 Iced Tea</p>
+            </div>
+            <div class="menu-item">
+                <h3>Burrito</h3>
+                <p>Contains: 1 Burrito</p>
+            </div>
+            <div class="menu-item">
+                <h3>Burrito Combo</h3>
+                <p>Contains: 1 Burrito, 1 Sour Cream</p>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>Food Order Tally System &copy; 2023</p>
+        </div>
+    </footer>
+
+    <script>
+        // Define menu items and their components
+        const menuItems = {
+            "basic bowl": { bowl: 1 },
+            "regular bowl": { bowl: 1, sour_cream: 1, salsa: 1 },
+            "large bowl combo": { bowl: 1, sour_cream: 1, salsa: 1, guacamole: 1, chips: 1, iced_tea: 1 },
+            "burrito": { burrito: 1 },
+            "burrito combo": { burrito: 1, sour_cream: 1 }
+        };
+        
+        // DOM elements
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const browseBtn = document.getElementById('browseBtn');
+        const processBtn = document.getElementById('processBtn');
+        const resultsSection = document.getElementById('resultsSection');
+        const summaryGrid = document.getElementById('summaryGrid');
+        const tallyBody = document.getElementById('tallyBody');
+        
+        let csvData = null;
+        
+        // Event listeners
+        browseBtn.addEventListener('click', () => fileInput.click());
+        
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
+                    csvData = file;
+                    uploadArea.classList.add('highlight');
+                    processBtn.disabled = false;
+                    uploadArea.innerHTML = `
+                        <div class="upload-icon">✅</div>
+                        <h3>File Ready: ${file.name}</h3>
+                        <p>Click "Process Orders" to analyze your data</p>
+                    `;
+                } else {
+                    alert('Please upload a valid CSV file');
+                }
+            }
+        });
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('highlight');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('highlight');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('highlight');
+            
+            if (e.dataTransfer.files.length > 0) {
+                const file = e.dataTransfer.files[0];
+                if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
+                    csvData = file;
+                    fileInput.files = e.dataTransfer.files;
+                    processBtn.disabled = false;
+                    uploadArea.innerHTML = `
+                        <div class="upload-icon">✅</div>
+                        <h3>File Ready: ${file.name}</h3>
+                        <p>Click "Process Orders" to analyze your data</p>
+                    `;
+                } else {
+                    alert('Please upload a valid CSV file');
+                }
+            }
+        });
+        
+        processBtn.addEventListener('click', processCSV);
+        
+        function processCSV() {
+            if (!csvData) return;
+            
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const csvText = e.target.result;
+                const orders = parseCSV(csvText);
+                const tally = tallyOrders(orders);
+                displayResults(tally);
+            };
+            
+            reader.readAsText(csvData);
+        }
+        
+        function parseCSV(csvText) {
+            const lines = csvText.split('\n');
+            const orders = [];
+            
+            // Find the column with order information
+            // Assuming the order column has headers like "What would you like to order?" or similar
+            const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+            let orderColumnIndex = -1;
+            
+            // Try to find the order column by common header names
+            const possibleHeaders = ['order', 'what would you like to order', 'menu selection', 'food order'];
+            for (let i = 0; i < headers.length; i++) {
+                if (possibleHeaders.some(ph => headers[i].includes(ph))) {
+                    orderColumnIndex = i;
+                    break;
+                }
+            }
+            
+            // If we can't find a specific order column, use the first data column
+            if (orderColumnIndex === -1) {
+                orderColumnIndex = 0;
+            }
+            
+            // Process each line (skip header)
+            for (let i = 1; i < lines.length; i++) {
+                if (lines[i].trim() === '') continue;
+                
+                const cells = lines[i].split(',').map(c => c.trim().toLowerCase());
+                if (cells.length > orderColumnIndex) {
+                    const orderText = cells[orderColumnIndex];
+                    
+                    // Try to identify which menu items are in this order
+                    for (const itemName in menuItems) {
+                        if (orderText.includes(itemName)) {
+                            orders.push(itemName);
+                        }
+                    }
+                }
+            }
+            
+            return orders;
+        }
+        
+        function tallyOrders(orders) {
+            const tally = {};
+            
+            // Initialize all items to 0
+            const allItems = new Set();
+            for (const item in menuItems) {
+                for (const component in menuItems[item]) {
+                    allItems.add(component);
+                }
+            }
+            
+            allItems.forEach(item => {
+                tally[item] = 0;
+            });
+            
+            // Tally up the orders
+            orders.forEach(order => {
+                if (menuItems[order]) {
+                    for (const component in menuItems[order]) {
+                        tally[component] += menuItems[order][component];
+                    }
+                }
+            });
+            
+            return tally;
+        }
+        
+        function displayResults(tally) {
+            // Show the results section
+            resultsSection.style.display = 'block';
+            
+            // Clear previous results
+            summaryGrid.innerHTML = '';
+            tallyBody.innerHTML = '';
+            
+            // Create summary cards
+            for (const item in tally) {
+                // Summary card
+                const card = document.createElement('div');
+                card.className = 'summary-card';
+                card.innerHTML = `
+                    <h3>${formatItemName(item)}</h3>
+                    <div class="count">${tally[item]}</div>
+                `;
+                summaryGrid.appendChild(card);
+                
+                // Table row
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${formatItemName(item)}</td>
+                    <td>${tally[item]}</td>
+                `;
+                tallyBody.appendChild(row);
+            }
+            
+            // Scroll to results
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function formatItemName(item) {
+            return item.split('_')
+                .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(' ');
+        }
+    </script>
+</body>
+</html>

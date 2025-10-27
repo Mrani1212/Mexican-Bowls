@@ -3,696 +3,302 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Food Order Tally System</title>
+    <title>Mexican Bowl Order Tally</title>
     <style>
-        :root {
-            --primary: #4a6fa5;
-            --secondary: #6b8cbc;
-            --accent: #ff7e5f;
-            --light: #f8f9fa;
-            --dark: #343a40;
-            --success: #28a745;
-        }
-        
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        body {
-            background-color: #f5f7fa;
-            color: var(--dark);
-            line-height: 1.6;
-        }
-        
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: white;
-            padding: 2rem 0;
-            text-align: center;
-            border-radius: 0 0 20px 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            margin-bottom: 2rem;
-        }
-        
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .subtitle {
-            font-size: 1.2rem;
-            opacity: 0.9;
-        }
-        
-        .card {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
-        
-        .card h2 {
-            color: var(--primary);
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #eee;
-        }
-        
-        .upload-area {
-            border: 2px dashed #ccc;
-            border-radius: 8px;
-            padding: 2rem;
-            text-align: center;
-            margin-bottom: 1.5rem;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-        
-        .upload-area:hover {
-            border-color: var(--primary);
-            background-color: rgba(74, 111, 165, 0.05);
-        }
-        
-        .upload-area.highlight {
-            border-color: var(--accent);
-            background-color: rgba(255, 126, 95, 0.1);
-        }
-        
-        .upload-icon {
-            font-size: 3rem;
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-        
-        .btn {
-            display: inline-block;
-            background: var(--primary);
-            color: white;
-            padding: 0.8rem 1.5rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1rem;
-            font-weight: 600;
-            transition: all 0.3s;
-            text-align: center;
-        }
-        
-        .btn:hover {
-            background: var(--secondary);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        
-        .btn-accent {
-            background: var(--accent);
-        }
-        
-        .btn-accent:hover {
-            background: #ff9670;
-        }
-        
-        .results {
-            display: none;
-        }
-        
-        .tally-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 1.5rem 0;
-        }
-        
-        .tally-table th, .tally-table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-        
-        .tally-table th {
-            background-color: var(--light);
-            color: var(--primary);
-            font-weight: 600;
-        }
-        
-        .tally-table tr:hover {
-            background-color: rgba(74, 111, 165, 0.05);
-        }
-        
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-top: 1.5rem;
-        }
-        
-        .summary-card {
-            background: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            text-align: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-            border-top: 4px solid var(--primary);
-        }
-        
-        .summary-card h3 {
-            color: var(--dark);
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .summary-card .count {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary);
-        }
-        
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 1.5rem;
-        }
-        
-        .menu-item {
-            background: var(--light);
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 0;
-        }
-        
-        .menu-item h3 {
-            color: var(--primary);
-            margin-bottom: 0.5rem;
-        }
-        
-        .menu-item p {
-            color: #666;
-            font-size: 0.95rem;
-        }
-        
-        .components-list {
-            margin-top: 0.5rem;
-            font-size: 0.9rem;
-        }
-        
-        .components-list li {
-            margin-bottom: 0.2rem;
-        }
-        
-        .special-requests {
-            margin-top: 2rem;
-            padding: 1.5rem;
-            background-color: #fff9e6;
-            border-radius: 8px;
-            border-left: 4px solid #ffc107;
-        }
-        
-        .special-requests h3 {
-            color: var(--dark);
-            margin-bottom: 1rem;
-        }
-        
-        .request-item {
-            padding: 0.75rem;
-            margin-bottom: 0.75rem;
-            background: white;
-            border-radius: 6px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-        
-        .instructions {
-            background-color: #e8f4fd;
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-top: 1.5rem;
-            border-left: 4px solid var(--primary);
-        }
-        
-        footer {
-            text-align: center;
-            margin-top: 3rem;
-            padding: 1.5rem;
-            color: #666;
-            border-top: 1px solid #eee;
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                padding: 10px;
-            }
-            
-            h1 {
-                font-size: 2rem;
-            }
-            
-            .summary-grid {
-                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            }
-            
-            .menu-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .upload-section { margin-bottom: 30px; padding: 20px; border: 2px dashed #ccc; }
+        .tally-section { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .category { margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        input[type="number"] { width: 60px; }
+        .manual-edit { background-color: #fffacd; }
     </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <h1>Food Order Tally System</h1>
-            <p class="subtitle">Upload your Google Forms data and get instant breakdown of order components</p>
-        </div>
-    </header>
-    
     <div class="container">
-        <div class="card">
-            <h2>Upload Your Orders</h2>
-            <div class="upload-area" id="uploadArea">
-                <div class="upload-icon">📊</div>
-                <h3>Upload Google Forms CSV</h3>
-                <p>Drag & drop your CSV file here or click to browse</p>
-                <input type="file" id="fileInput" accept=".csv" style="display: none;">
-                <button class="btn" id="browseBtn" style="margin-top: 1rem;">Browse Files</button>
-            </div>
-            <div class="instructions">
-                <h3>How to export your Google Forms data:</h3>
-                <ol>
-                    <li>Open your Google Forms response sheet</li>
-                    <li>Go to File → Download → Comma-separated values (.csv)</li>
-                    <li>Upload the downloaded CSV file here</li>
-                </ol>
-            </div>
-            <div style="text-align: center;">
-                <button class="btn btn-accent" id="processBtn" disabled>Process Orders</button>
-            </div>
-        </div>
+        <h1>Mexican Bowl Order Tally</h1>
         
-        <div class="card results" id="resultsSection">
-            <h2>Order Breakdown</h2>
-            <div class="summary-grid" id="summaryGrid">
-                <!-- Summary cards will be inserted here -->
-            </div>
-            
-            <h3 style="margin-top: 2rem;">Detailed Tally</h3>
-            <table class="tally-table" id="tallyTable">
-                <thead>
-                    <tr>
-                        <th>Item</th>
-                        <th>Quantity</th>
-                    </tr>
-                </thead>
-                <tbody id="tallyBody">
-                    <!-- Tally rows will be inserted here -->
-                </tbody>
-            </table>
-            
-            <div class="special-requests" id="specialRequestsSection">
-                <h3>Special Requests & Custom Orders</h3>
-                <div id="specialRequestsList">
-                    <!-- Special requests will be inserted here -->
-                </div>
-            </div>
+        <div class="upload-section">
+            <h2>Upload Google Forms CSV</h2>
+            <input type="file" id="csvFile" accept=".csv">
+            <button onclick="processCSV()">Process Orders</button>
         </div>
-        
-        <div class="card">
-            <h2>Menu Items & Components</h2>
-            <div class="menu-grid">
-                <div class="menu-item">
-                    <h3>Basic Bowl - 20 SAR</h3>
-                    <p>Contains:</p>
-                    <ul class="components-list">
-                        <li>1 Bowl</li>
-                    </ul>
-                </div>
-                <div class="menu-item">
-                    <h3>Regular Bowl - 25 SAR</h3>
-                    <p>Contains:</p>
-                    <ul class="components-list">
-                        <li>1 Bowl</li>
-                        <li>1 Sour Cream</li>
-                        <li>1 Salsa</li>
-                    </ul>
-                </div>
-                <div class="menu-item">
-                    <h3>Large Combo Bowl - 35 SAR</h3>
-                    <p>Contains:</p>
-                    <ul class="components-list">
-                        <li>1 Bowl</li>
-                        <li>1 Sour Cream</li>
-                        <li>1 Salsa</li>
-                        <li>1 Guacamole</li>
-                        <li>1 Chips</li>
-                        <li>1 Iced Tea</li>
-                    </ul>
-                </div>
-                <div class="menu-item">
-                    <h3>Burrito - 15 SAR</h3>
-                    <p>Contains:</p>
-                    <ul class="components-list">
-                        <li>1 Burrito</li>
-                    </ul>
-                </div>
-                <div class="menu-item">
-                    <h3>Burrito Combo - 20 SAR</h3>
-                    <p>Contains:</p>
-                    <ul class="components-list">
-                        <li>1 Burrito</li>
-                        <li>1 Sour Cream</li>
-                    </ul>
-                </div>
+
+        <div class="tally-section">
+            <div class="bowl-category category">
+                <h2>Bowl Orders</h2>
+                <table id="bowlTally">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Manual Adjust</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Will be populated by JavaScript -->
+                    </tbody>
+                </table>
             </div>
-            
-            <h3 style="margin-top: 2rem;">Side Options</h3>
-            <div class="menu-grid">
-                <div class="menu-item">
-                    <h3>Extra Protein - 5 SAR</h3>
-                    <p>Contains: 1 Extra Protein</p>
-                </div>
-                <div class="menu-item">
-                    <h3>Chips and Salsa - 5 SAR</h3>
-                    <p>Contains: 1 Chips, 1 Salsa</p>
-                </div>
-                <div class="menu-item">
-                    <h3>Iced Tea - 5 SAR</h3>
-                    <p>Contains: 1 Iced Tea</p>
-                </div>
-                <div class="menu-item">
-                    <h3>Guac - 6 SAR</h3>
-                    <p>Contains: 1 Guacamole</p>
-                </div>
-                <div class="menu-item">
-                    <h3>Salsa - 5 SAR</h3>
-                    <p>Contains: 1 Salsa</p>
-                </div>
-                <div class="menu-item">
-                    <h3>Sour Cream - 4 SAR</h3>
-                    <p>Contains: 1 Sour Cream</p>
-                </div>
-                <div class="menu-item">
-                    <h3>Extra Fried Onion - 3 SAR</h3>
-                    <p>Contains: 1 Extra Fried Onion</p>
-                </div>
-                <div class="menu-item">
-                    <h3>Extra Cheese - 5 SAR</h3>
-                    <p>Contains: 1 Extra Cheese</p>
-                </div>
-                <div class="menu-item">
-                    <h3>Extra Roasted Pepper/Corn Mix - 4 SAR</h3>
-                    <p>Contains: 1 Extra Roasted Pepper/Corn Mix</p>
-                </div>
-                <div class="menu-item">
-                    <h3>Extra Pico de Gallo - 5 SAR</h3>
-                    <p>Contains: 1 Extra Pico de Gallo</p>
+
+            <div class="burrito-category category">
+                <h2>Burrito Orders</h2>
+                <table id="burritoTally">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Manual Adjust</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="extras-category category">
+                <h2>Extras</h2>
+                <table id="extrasTally">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Manual Adjust</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Will be populated by JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="summary-category category">
+                <h2>Order Summary</h2>
+                <div id="orderSummary">
+                    <!-- Will be populated by JavaScript -->
                 </div>
             </div>
         </div>
     </div>
-    
-    <footer>
-        <div class="container">
-            <p>Food Order Tally System &copy; 2023</p>
-        </div>
-    </footer>
 
     <script>
-        // Define menu items and their components
+        // Define your menu items and prices
         const menuItems = {
-            "basic bowl": { bowl: 1 },
-            "regular bowl": { bowl: 1, sour_cream: 1, salsa: 1 },
-            "large combo bowl": { bowl: 1, sour_cream: 1, salsa: 1, guacamole: 1, chips: 1, iced_tea: 1 },
-            "burrito": { burrito: 1 },
-            "burrito combo": { burrito: 1, sour_cream: 1 },
-            // Side options
-            "extra protein": { extra_protein: 1 },
-            "chips and salsa": { chips: 1, salsa: 1 },
-            "ice tea": { iced_tea: 1 },
-            "guac": { guacamole: 1 },
-            "salsa": { salsa: 1 },
-            "sour cream": { sour_cream: 1 },
-            "extra fried onion": { extra_fried_onion: 1 },
-            "extra cheese": { extra_cheese: 1 },
-            "extra roasted pepper/corn mix": { extra_roasted_pepper_corn_mix: 1 },
-            "extra pico de gallo": { extra_pico_de_gallo: 1 }
+            bowls: {
+                'Basic Bowl - 20 SAR': 20,
+                'Regular Bowl (salsa + sour cream) - 25 SAR': 25,
+                'Large Combo Bowl - 35 SAR': 35,
+                'Mexican Rice (free alternative)': 0
+            },
+            burritos: {
+                'Burrito - 15 SAR': 15,
+                'Burrito Combo W/Sour Cream - 20 SAR': 20,
+                'Burrito Combo W/Salsa - 20 SAR': 20,
+                'Burrito Combo 2 (sour cream + guac + salsa + iced tea) - 25 SAR': 25
+            },
+            extras: {
+                'Extra Protein - 5 SAR': 5,
+                'Chips and Salsa - 5 SAR': 5,
+                'Lemon Mint Iced Tea - 5 SAR': 5,
+                'Strawberry Mint Iced Tea': 0, // Price not specified in your data
+                'Guac - 6 SAR': 6,
+                'Salsa - 5 SAR': 5,
+                'Sour Cream - 4 SAR': 4,
+                'Extra Cheese (75 g) - 5 SAR': 5
+            }
         };
-        
-        // DOM elements
-        const uploadArea = document.getElementById('uploadArea');
-        const fileInput = document.getElementById('fileInput');
-        const browseBtn = document.getElementById('browseBtn');
-        const processBtn = document.getElementById('processBtn');
-        const resultsSection = document.getElementById('resultsSection');
-        const summaryGrid = document.getElementById('summaryGrid');
-        const tallyBody = document.getElementById('tallyBody');
-        const specialRequestsSection = document.getElementById('specialRequestsSection');
-        const specialRequestsList = document.getElementById('specialRequestsList');
-        
-        let csvData = null;
-        
-        // Event listeners
-        browseBtn.addEventListener('click', () => fileInput.click());
-        
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                const file = e.target.files[0];
-                if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
-                    csvData = file;
-                    uploadArea.classList.add('highlight');
-                    processBtn.disabled = false;
-                    uploadArea.innerHTML = `
-                        <div class="upload-icon">✅</div>
-                        <h3>File Ready: ${file.name}</h3>
-                        <p>Click "Process Orders" to analyze your data</p>
-                    `;
-                } else {
-                    alert('Please upload a valid CSV file');
+
+        let currentTally = {
+            bowls: {},
+            burritos: {},
+            extras: {}
+        };
+
+        // Initialize tally with zero quantities
+        function initializeTally() {
+            for (const category in menuItems) {
+                for (const item in menuItems[category]) {
+                    currentTally[category][item] = {
+                        quantity: 0,
+                        manualAdjust: 0,
+                        price: menuItems[category][item]
+                    };
                 }
             }
-        });
-        
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.classList.add('highlight');
-        });
-        
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('highlight');
-        });
-        
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.classList.remove('highlight');
-            
-            if (e.dataTransfer.files.length > 0) {
-                const file = e.dataTransfer.files[0];
-                if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
-                    csvData = file;
-                    fileInput.files = e.dataTransfer.files;
-                    processBtn.disabled = false;
-                    uploadArea.innerHTML = `
-                        <div class="upload-icon">✅</div>
-                        <h3>File Ready: ${file.name}</h3>
-                        <p>Click "Process Orders" to analyze your data</p>
-                    `;
-                } else {
-                    alert('Please upload a valid CSV file');
-                }
-            }
-        });
-        
-        processBtn.addEventListener('click', processCSV);
-        
-        function processCSV() {
-            if (!csvData) return;
-            
-            const reader = new FileReader();
-            
-            reader.onload = function(e) {
-                const csvText = e.target.result;
-                const { orders, specialRequests } = parseCSV(csvText);
-                const tally = tallyOrders(orders);
-                displayResults(tally, specialRequests);
-            };
-            
-            reader.readAsText(csvData);
         }
-        
-        function parseCSV(csvText) {
-            const lines = csvText.split('\n');
-            const orders = [];
-            const specialRequests = [];
+
+        function processCSV() {
+            const fileInput = document.getElementById('csvFile');
+            const file = fileInput.files[0];
             
-            // Find the column indices for each menu item
-            const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
-            
-            // Map column names to our menu items
-            const columnMapping = {
-                "basic bowl": "basic bowl",
-                "regular bowl": "regular bowl", 
-                "large combo bowl": "large combo bowl",
-                "burrito": "burrito",
-                "burrito combo": "burrito combo",
-                "extra protein": "extra protein",
-                "chips and salsa": "chips and salsa",
-                "ice tea": "ice tea",
-                "guac": "guac",
-                "salsa": "salsa",
-                "sour cream": "sour cream",
-                "extra fried onion": "extra fried onion",
-                "extra cheese": "extra cheese",
-                "extra roasted pepper/corn mix": "extra roasted pepper/corn mix",
-                "extra pico de gallo": "extra pico de gallo"
+            if (!file) {
+                alert('Please select a CSV file');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const csvData = e.target.result;
+                parseCSVData(csvData);
+                updateDisplay();
             };
+            reader.readAsText(file);
+        }
+
+        function parseCSVData(csvText) {
+            // Reset tally
+            initializeTally();
             
-            // Find column indices
-            const columnIndices = {};
-            for (const [header, menuItem] of Object.entries(columnMapping)) {
-                for (let i = 0; i < headers.length; i++) {
-                    if (headers[i].includes(header)) {
-                        columnIndices[menuItem] = i;
-                        break;
-                    }
-                }
-            }
+            const lines = csvText.split('\n');
+            const headers = lines[0].split(',').map(header => header.trim());
             
-            // Find special requests column
-            let specialRequestsIndex = -1;
-            for (let i = 0; i < headers.length; i++) {
-                if (headers[i].includes("special requests")) {
-                    specialRequestsIndex = i;
-                    break;
-                }
-            }
-            
-            // Process each line (skip header)
+            // Process each order (skip header row)
             for (let i = 1; i < lines.length; i++) {
                 if (lines[i].trim() === '') continue;
                 
-                const cells = lines[i].split(',').map(c => c.trim());
+                const values = parseCSVLine(lines[i]);
+                const order = {};
                 
-                // Process menu items
-                for (const [menuItem, index] of Object.entries(columnIndices)) {
-                    if (index !== undefined && cells[index] && !isNaN(cells[index]) && cells[index] !== '') {
-                        const quantity = parseInt(cells[index]);
-                        for (let j = 0; j < quantity; j++) {
-                            orders.push(menuItem);
-                        }
-                    }
-                }
+                // Create order object with headers as keys
+                headers.forEach((header, index) => {
+                    order[header] = values[index] ? values[index].trim() : '';
+                });
                 
-                // Process special requests
-                if (specialRequestsIndex !== -1 && cells[specialRequestsIndex] && 
-                    cells[specialRequestsIndex] !== '' && 
-                    !cells[specialRequestsIndex].toLowerCase().includes("custom/write in special request") &&
-                    !cells[specialRequestsIndex].toLowerCase().includes("custom/ write in special request")) {
-                    
-                    specialRequests.push({
-                        text: cells[specialRequestsIndex],
-                        row: i
-                    });
+                // Count items in this order
+                countOrderItems(order);
+            }
+        }
+
+        function parseCSVLine(line) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < line.length; i++) {
+                const char = line[i];
+                
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current);
+                    current = '';
+                } else {
+                    current += char;
                 }
             }
             
-            return { orders, specialRequests };
+            result.push(current);
+            return result;
         }
-        
-        function tallyOrders(orders) {
-            const tally = {};
-            
-            // Initialize all items to 0
-            const allItems = new Set();
-            for (const item in menuItems) {
-                for (const component in menuItems[item]) {
-                    allItems.add(component);
+
+        function countOrderItems(order) {
+            // Count bowl options
+            for (const bowl in menuItems.bowls) {
+                const bowlHeader = `Bowl Options [${bowl}]`;
+                if (order[bowlHeader] && order[bowlHeader].trim() !== '') {
+                    currentTally.bowls[bowl].quantity++;
                 }
             }
-            
-            allItems.forEach(item => {
-                tally[item] = 0;
-            });
-            
-            // Tally up the orders
-            orders.forEach(order => {
-                if (menuItems[order]) {
-                    for (const component in menuItems[order]) {
-                        tally[component] += menuItems[order][component];
-                    }
+
+            // Count burrito options
+            for (const burrito in menuItems.burritos) {
+                const burritoHeader = `Bowl Options [${burrito}]`;
+                if (order[burritoHeader] && order[burritoHeader].trim() !== '') {
+                    currentTally.burritos[burrito].quantity++;
                 }
-            });
-            
-            return tally;
+            }
+
+            // Count extras
+            for (const extra in menuItems.extras) {
+                const extraHeader = `Extras [${extra}]`;
+                if (order[extraHeader] && order[extraHeader].trim() !== '') {
+                    currentTally.extras[extra].quantity++;
+                }
+            }
         }
-        
-        function displayResults(tally, specialRequests) {
-            // Show the results section
-            resultsSection.style.display = 'block';
+
+        function updateDisplay() {
+            updateCategoryTable('bowls', 'bowlTally');
+            updateCategoryTable('burritos', 'burritoTally');
+            updateCategoryTable('extras', 'extrasTally');
+            updateOrderSummary();
+        }
+
+        function updateCategoryTable(category, tableId) {
+            const tbody = document.querySelector(`#${tableId} tbody`);
+            tbody.innerHTML = '';
             
-            // Clear previous results
-            summaryGrid.innerHTML = '';
-            tallyBody.innerHTML = '';
-            specialRequestsList.innerHTML = '';
+            let categoryTotal = 0;
             
-            // Create summary cards
-            for (const item in tally) {
-                // Skip items with zero quantity
-                if (tally[item] === 0) continue;
+            for (const item in currentTally[category]) {
+                const itemData = currentTally[category][item];
+                const totalQuantity = itemData.quantity + itemData.manualAdjust;
+                const subtotal = totalQuantity * itemData.price;
+                categoryTotal += subtotal;
                 
-                // Summary card
-                const card = document.createElement('div');
-                card.className = 'summary-card';
-                card.innerHTML = `
-                    <h3>${formatItemName(item)}</h3>
-                    <div class="count">${tally[item]}</div>
-                `;
-                summaryGrid.appendChild(card);
-                
-                // Table row
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${formatItemName(item)}</td>
-                    <td>${tally[item]}</td>
+                    <td>${item}</td>
+                    <td>${itemData.price} SAR</td>
+                    <td>${itemData.quantity}</td>
+                    <td>
+                        <input type="number" value="${itemData.manualAdjust}" 
+                               onchange="updateManualAdjust('${category}', '${item}', this.value)"
+                               class="manual-edit">
+                    </td>
+                    <td>${subtotal} SAR</td>
                 `;
-                tallyBody.appendChild(row);
+                tbody.appendChild(row);
             }
             
-            // Display special requests
-            if (specialRequests.length > 0) {
-                specialRequestsSection.style.display = 'block';
-                specialRequests.forEach(request => {
-                    const requestItem = document.createElement('div');
-                    requestItem.className = 'request-item';
-                    requestItem.innerHTML = `
-                        <strong>Order ${request.row}:</strong> ${request.text}
-                    `;
-                    specialRequestsList.appendChild(requestItem);
-                });
-            } else {
-                specialRequestsSection.style.display = 'none';
+            // Add total row
+            const totalRow = document.createElement('tr');
+            totalRow.style.fontWeight = 'bold';
+            totalRow.innerHTML = `
+                <td colspan="4">Total</td>
+                <td>${categoryTotal} SAR</td>
+            `;
+            tbody.appendChild(totalRow);
+        }
+
+        function updateManualAdjust(category, item, value) {
+            currentTally[category][item].manualAdjust = parseInt(value) || 0;
+            updateDisplay();
+        }
+
+        function updateOrderSummary() {
+            const summaryDiv = document.getElementById('orderSummary');
+            let grandTotal = 0;
+            let summaryHTML = '';
+            
+            for (const category in currentTally) {
+                let categoryTotal = 0;
+                for (const item in currentTally[category]) {
+                    const itemData = currentTally[category][item];
+                    const totalQuantity = itemData.quantity + itemData.manualAdjust;
+                    categoryTotal += totalQuantity * itemData.price;
+                }
+                grandTotal += categoryTotal;
+                summaryHTML += `<p><strong>${category.charAt(0).toUpperCase() + category.slice(1)} Total:</strong> ${categoryTotal} SAR</p>`;
             }
             
-            // Scroll to results
-            resultsSection.scrollIntoView({ behavior: 'smooth' });
+            summaryHTML += `<h3>Grand Total: ${grandTotal} SAR</h3>`;
+            summaryDiv.innerHTML = summaryHTML;
         }
-        
-        function formatItemName(item) {
-            return item.split('_')
-                .map(word => {
-                    // Special handling for specific terms
-                    if (word === 'guac') return 'Guacamole';
-                    if (word === 'picco') return 'Pico';
-                    return word.charAt(0).toUpperCase() + word.slice(1);
-                })
-                .join(' ');
-        }
+
+        // Initialize on page load
+        initializeTally();
+        updateDisplay();
     </script>
 </body>
 </html>

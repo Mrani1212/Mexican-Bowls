@@ -5,40 +5,276 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mexican Bowl Order Tally</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        .upload-section { margin-bottom: 30px; padding: 20px; border: 2px dashed #ccc; }
-        .tally-section { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .category { margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-        th { background-color: #f2f2f2; }
-        input[type="number"] { width: 60px; }
-        .manual-edit { background-color: #fffacd; }
-        .special-requests { grid-column: 1 / -1; }
-        .request-row { margin-bottom: 10px; padding: 10px; border: 1px solid #eee; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .description {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .upload-section {
+            padding: 25px;
+            border-bottom: 1px solid #eee;
+            background-color: #f8f9fa;
+        }
+        
+        .upload-area {
+            border: 2px dashed #3498db;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            background-color: #ecf0f1;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .upload-area:hover {
+            background-color: #d6eaf8;
+            border-color: #2980b9;
+        }
+        
+        .upload-area i {
+            font-size: 48px;
+            color: #3498db;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .upload-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            margin-top: 15px;
+        }
+        
+        .upload-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        .tally-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            padding: 25px;
+        }
+        
+        .category {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+        
+        .category-header {
+            background: linear-gradient(135deg, #2ecc71, #27ae60);
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.3rem;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        input[type="number"] {
+            width: 70px;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .manual-edit {
+            background-color: #fff9c4;
+        }
+        
+        .special-requests {
+            grid-column: 1 / -1;
+        }
+        
+        .request-row {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .request-row:last-child {
+            border-bottom: none;
+        }
+        
+        .request-info {
+            flex-grow: 1;
+        }
+        
+        .customer-name {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .customer-phone {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+        
+        .request-text {
+            margin-top: 5px;
+            color: #34495e;
+        }
+        
+        .summary-section {
+            padding: 25px;
+            background-color: #f8f9fa;
+            border-top: 1px solid #eee;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .summary-card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+        
+        .summary-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 10px 0;
+        }
+        
+        .summary-label {
+            color: #7f8c8d;
+            font-size: 1rem;
+        }
+        
+        .grand-total {
+            grid-column: 1 / -1;
+            background: linear-gradient(135deg, #9b59b6, #8e44ad);
+            color: white;
+        }
+        
+        .grand-total .summary-value {
+            color: white;
+        }
+        
+        .grand-total .summary-label {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .no-requests {
+            padding: 30px;
+            text-align: center;
+            color: #7f8c8d;
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            .tally-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Mexican Bowl Order Tally</h1>
+        <header>
+            <h1>Mexican Bowl Order Tally</h1>
+            <p class="description">Upload your Google Forms CSV to automatically tally orders, track special requests, and manage your Mexican bowl business efficiently.</p>
+        </header>
         
-        <div class="upload-section">
-            <h2>Upload Google Forms CSV</h2>
-            <input type="file" id="csvFile" accept=".csv">
-            <button onclick="processCSV()">Process Orders</button>
-        </div>
-
-        <div class="tally-section">
-            <div class="bowl-category category">
-                <h2>Bowl Orders</h2>
+        <section class="upload-section">
+            <div class="upload-area" onclick="document.getElementById('csvFile').click()">
+                <i>📊</i>
+                <h3>Upload Google Forms CSV</h3>
+                <p>Click here or drag and drop your CSV file</p>
+                <input type="file" id="csvFile" accept=".csv" class="file-input">
+                <button class="upload-btn" onclick="processCSV()">Process Orders</button>
+            </div>
+        </section>
+        
+        <section class="tally-section">
+            <div class="category">
+                <div class="category-header">Bowl Orders</div>
                 <table id="bowlTally">
                     <thead>
                         <tr>
                             <th>Item</th>
                             <th>Price</th>
                             <th>Quantity</th>
-                            <th>Manual Adjust</th>
+                            <th>Adjust</th>
                             <th>Subtotal</th>
                         </tr>
                     </thead>
@@ -47,16 +283,16 @@
                     </tbody>
                 </table>
             </div>
-
-            <div class="burrito-category category">
-                <h2>Burrito Orders</h2>
+            
+            <div class="category">
+                <div class="category-header">Burrito Orders</div>
                 <table id="burritoTally">
                     <thead>
                         <tr>
                             <th>Item</th>
                             <th>Price</th>
                             <th>Quantity</th>
-                            <th>Manual Adjust</th>
+                            <th>Adjust</th>
                             <th>Subtotal</th>
                         </tr>
                     </thead>
@@ -65,16 +301,16 @@
                     </tbody>
                 </table>
             </div>
-
-            <div class="extras-category category">
-                <h2>Extras</h2>
+            
+            <div class="category">
+                <div class="category-header">Extras</div>
                 <table id="extrasTally">
                     <thead>
                         <tr>
                             <th>Item</th>
                             <th>Price</th>
                             <th>Quantity</th>
-                            <th>Manual Adjust</th>
+                            <th>Adjust</th>
                             <th>Subtotal</th>
                         </tr>
                     </thead>
@@ -83,48 +319,91 @@
                     </tbody>
                 </table>
             </div>
-
-            <div class="special-requests category">
-                <h2>Special Requests & Allergies</h2>
+            
+            <div class="category special-requests">
+                <div class="category-header">Special Requests & Allergies</div>
                 <div id="specialRequestsList">
                     <!-- Will be populated by JavaScript -->
                 </div>
             </div>
-
-            <div class="summary-category category">
-                <h2>Order Summary</h2>
-                <div id="orderSummary">
-                    <!-- Will be populated by JavaScript -->
+        </section>
+        
+        <section class="summary-section">
+            <div class="summary-grid">
+                <div class="summary-card">
+                    <div class="summary-label">Total Bowls</div>
+                    <div class="summary-value" id="totalBowls">0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">Total Burritos</div>
+                    <div class="summary-value" id="totalBurritos">0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">Total Extras</div>
+                    <div class="summary-value" id="totalExtras">0</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">Special Requests</div>
+                    <div class="summary-value" id="totalRequests">0</div>
+                </div>
+                <div class="summary-card grand-total">
+                    <div class="summary-label">Grand Total</div>
+                    <div class="summary-value" id="grandTotal">0 SAR</div>
                 </div>
             </div>
-        </div>
+        </section>
     </div>
 
     <script>
-        // Define your menu items and prices - updated to match CSV headers exactly
+        // Define your menu items and prices - using simplified keys for internal use
         const menuItems = {
             bowls: {
-                'Basic Bowl - 20 SAR': 20,
-                'Regular Bowl (salsa + sour cream ) - 25 SAR': 25,
-                'Large Combo Bowl  - 35 SAR': 35,
-                'Mexican Rice (free alternative)': 0
+                'basic_bowl': { name: 'Basic Bowl - 20 SAR', price: 20 },
+                'regular_bowl': { name: 'Regular Bowl (salsa + sour cream) - 25 SAR', price: 25 },
+                'large_combo_bowl': { name: 'Large Combo Bowl - 35 SAR', price: 35 },
+                'mexican_rice': { name: 'Mexican Rice (free alternative)', price: 0 }
             },
             burritos: {
-                'Burrito - 15 SAR': 15,
-                'Burrito Combo W/Sour Cream - 20 SAR': 20,
-                'Burrito Combo W/Salsa - 20 SAR': 20,
-                'Burrito Combo 2( sour cream + guac + salsa + iced tea) 25 SAR': 25
+                'burrito': { name: 'Burrito - 15 SAR', price: 15 },
+                'burrito_combo_sour_cream': { name: 'Burrito Combo W/Sour Cream - 20 SAR', price: 20 },
+                'burrito_combo_salsa': { name: 'Burrito Combo W/Salsa - 20 SAR', price: 20 },
+                'burrito_combo_2': { name: 'Burrito Combo 2( sour cream + guac + salsa + iced tea) 25 SAR', price: 25 }
             },
             extras: {
-                'Extra Protein 5 SAR': 5,
-                'Chips and Salsa - 5 SAR': 5,
-                'Lemon Mint Iced Tea - 5 SAR': 5,
-                'Strawberry Mint Iced Tea': 5, // Added price
-                'Guac - 6 SAR': 6,
-                'Salsa - 5 SAR': 5,
-                'Sour Cream - 4 SAR': 4,
-                'Extra Cheese (75 g) - 5 SAR': 5
+                'extra_protein': { name: 'Extra Protein 5 SAR', price: 5 },
+                'chips_salsa': { name: 'Chips and Salsa - 5 SAR', price: 5 },
+                'lemon_tea': { name: 'Lemon Mint Iced Tea - 5 SAR', price: 5 },
+                'strawberry_tea': { name: 'Strawberry Mint Iced Tea', price: 5 },
+                'guac': { name: 'Guac - 6 SAR', price: 6 },
+                'salsa': { name: 'Salsa - 5 SAR', price: 5 },
+                'sour_cream': { name: 'Sour Cream - 4 SAR', price: 4 },
+                'extra_cheese': { name: 'Extra Cheese (75 g) - 5 SAR', price: 5 }
             }
+        };
+
+        // Map CSV headers to our internal keys
+        const headerMappings = {
+            // Bowl headers
+            'Bowl Options [Basic Bowl - 20 SAR]': { category: 'bowls', key: 'basic_bowl' },
+            'Bowl Options [Regular Bowl (salsa + sour cream ) - 25 SAR]': { category: 'bowls', key: 'regular_bowl' },
+            'Bowl Options [Large Combo Bowl  - 35 SAR]': { category: 'bowls', key: 'large_combo_bowl' },
+            'Bowl Options [Mexican Rice (free alternative)]': { category: 'bowls', key: 'mexican_rice' },
+            
+            // Burrito headers  
+            'Bowl Options [Burrito - 15 SAR]': { category: 'burritos', key: 'burrito' },
+            'Bowl Options [Burrito Combo W/Sour Cream - 20 SAR]': { category: 'burritos', key: 'burrito_combo_sour_cream' },
+            'Bowl Options [Burrito Combo W/Salsa - 20 SAR]': { category: 'burritos', key: 'burrito_combo_salsa' },
+            'Bowl Options [Burrito Combo 2( sour cream + guac + salsa + iced tea) 25 SAR]': { category: 'burritos', key: 'burrito_combo_2' },
+            
+            // Extras headers
+            'Extras [Extra Protein 5 SAR]': { category: 'extras', key: 'extra_protein' },
+            'Extras [Chips and Salsa - 5 SAR]': { category: 'extras', key: 'chips_salsa' },
+            'Extras [Lemon Mint Iced Tea - 5 SAR]': { category: 'extras', key: 'lemon_tea' },
+            'Extras [Strawberry Mint Iced Tea]': { category: 'extras', key: 'strawberry_tea' },
+            'Extras [Guac - 6 SAR]': { category: 'extras', key: 'guac' },
+            'Extras [Salsa - 5 SAR]': { category: 'extras', key: 'salsa' },
+            'Extras [Sour Cream - 4 SAR]': { category: 'extras', key: 'sour_cream' },
+            'Extras [Extra Cheese (75 g) - 5 SAR]': { category: 'extras', key: 'extra_cheese' }
         };
 
         let currentTally = {
@@ -138,11 +417,12 @@
         // Initialize tally with zero quantities
         function initializeTally() {
             for (const category in menuItems) {
-                for (const item in menuItems[category]) {
-                    currentTally[category][item] = {
+                for (const key in menuItems[category]) {
+                    currentTally[category][key] = {
                         quantity: 0,
                         manualAdjust: 0,
-                        price: menuItems[category][item]
+                        price: menuItems[category][key].price,
+                        name: menuItems[category][key].name
                     };
                 }
             }
@@ -188,21 +468,24 @@
                     order[header] = values[index] ? values[index].trim() : '';
                 });
                 
-                // Count items in this order
-                countOrderItems(order, headers);
+                console.log("Processing order:", order); // Debug log
+                
+                // Count items in this order using header mappings
+                countOrderItems(order);
                 
                 // Collect special requests
-                if (order['Special Requests (custom order, allergies, etc)'] && 
-                    order['Special Requests (custom order, allergies, etc)'].trim() !== '') {
+                const specialRequestHeader = 'Special Requests (custom order, allergies, etc)';
+                if (order[specialRequestHeader] && order[specialRequestHeader].trim() !== '') {
                     specialRequests.push({
                         name: order['Name:'] || 'Unknown',
                         phone: order['Phone:'] || 'Unknown',
-                        request: order['Special Requests (custom order, allergies, etc)']
+                        request: order[specialRequestHeader]
                     });
                 }
             }
             
             console.log("Final tally:", currentTally); // Debug log
+            console.log("Special requests:", specialRequests); // Debug log
         }
 
         function parseCSVLine(line) {
@@ -227,38 +510,21 @@
             return result;
         }
 
-        function countOrderItems(order, headers) {
-            // Debug: Log what we're checking
-            console.log("Processing order:", order);
-            
-            // Count all items by checking each header
-            headers.forEach(header => {
+        function countOrderItems(order) {
+            // Go through each header mapping and check if it exists in the order
+            for (const header in headerMappings) {
+                const mapping = headerMappings[header];
                 const value = order[header];
                 
-                if (value && value.trim() !== '' && !isNaN(value) && parseInt(value) > 0) {
-                    // This is a quantity field with a number
-                    const quantity = parseInt(value);
-                    
-                    // Check which category this header belongs to
-                    for (const category in menuItems) {
-                        for (const item in menuItems[category]) {
-                            // Create the expected header for this item
-                            let expectedHeader;
-                            if (category === 'bowls' || category === 'burritos') {
-                                expectedHeader = `Bowl Options [${item}]`;
-                            } else {
-                                expectedHeader = `Extras [${item}]`;
-                            }
-                            
-                            if (header === expectedHeader) {
-                                currentTally[category][item].quantity += quantity;
-                                console.log(`Added ${quantity} to ${item}`); // Debug log
-                                break;
-                            }
-                        }
+                if (value && value.trim() !== '') {
+                    // Try to parse as number
+                    const quantity = parseFloat(value);
+                    if (!isNaN(quantity) && quantity > 0) {
+                        currentTally[mapping.category][mapping.key].quantity += quantity;
+                        console.log(`Added ${quantity} to ${mapping.category}.${mapping.key}`); // Debug log
                     }
                 }
-            });
+            }
         }
 
         function updateDisplay() {
@@ -274,21 +540,23 @@
             tbody.innerHTML = '';
             
             let categoryTotal = 0;
+            let categoryItems = 0;
             
-            for (const item in currentTally[category]) {
-                const itemData = currentTally[category][item];
+            for (const key in currentTally[category]) {
+                const itemData = currentTally[category][key];
                 const totalQuantity = itemData.quantity + itemData.manualAdjust;
                 const subtotal = totalQuantity * itemData.price;
                 categoryTotal += subtotal;
+                categoryItems += totalQuantity;
                 
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>${item}</td>
+                    <td>${itemData.name}</td>
                     <td>${itemData.price} SAR</td>
                     <td>${itemData.quantity}</td>
                     <td>
                         <input type="number" value="${itemData.manualAdjust}" 
-                               onchange="updateManualAdjust('${category}', '${item}', this.value)"
+                               onchange="updateManualAdjust('${category}', '${key}', this.value)"
                                class="manual-edit">
                     </td>
                     <td>${subtotal} SAR</td>
@@ -299,11 +567,22 @@
             // Add total row
             const totalRow = document.createElement('tr');
             totalRow.style.fontWeight = 'bold';
+            totalRow.style.backgroundColor = '#f1f8e9';
             totalRow.innerHTML = `
-                <td colspan="4">Total</td>
+                <td colspan="3">Total</td>
+                <td>${categoryItems}</td>
                 <td>${categoryTotal} SAR</td>
             `;
             tbody.appendChild(totalRow);
+            
+            // Update summary cards
+            if (category === 'bowls') {
+                document.getElementById('totalBowls').textContent = categoryItems;
+            } else if (category === 'burritos') {
+                document.getElementById('totalBurritos').textContent = categoryItems;
+            } else if (category === 'extras') {
+                document.getElementById('totalExtras').textContent = categoryItems;
+            }
         }
 
         function updateSpecialRequests() {
@@ -311,49 +590,76 @@
             requestsDiv.innerHTML = '';
             
             if (specialRequests.length === 0) {
-                requestsDiv.innerHTML = '<p>No special requests</p>';
+                requestsDiv.innerHTML = '<div class="no-requests">No special requests</div>';
                 return;
             }
             
-            specialRequests.forEach(request => {
+            document.getElementById('totalRequests').textContent = specialRequests.length;
+            
+            specialRequests.forEach((request, index) => {
                 const requestDiv = document.createElement('div');
                 requestDiv.className = 'request-row';
                 requestDiv.innerHTML = `
-                    <strong>${request.name}</strong> (${request.phone}): ${request.request}
+                    <div class="request-info">
+                        <div class="customer-name">${request.name}</div>
+                        <div class="customer-phone">${request.phone}</div>
+                        <div class="request-text">${request.request}</div>
+                    </div>
                 `;
                 requestsDiv.appendChild(requestDiv);
             });
         }
 
-        function updateManualAdjust(category, item, value) {
-            currentTally[category][item].manualAdjust = parseInt(value) || 0;
+        function updateManualAdjust(category, key, value) {
+            currentTally[category][key].manualAdjust = parseInt(value) || 0;
             updateDisplay();
         }
 
         function updateOrderSummary() {
-            const summaryDiv = document.getElementById('orderSummary');
             let grandTotal = 0;
-            let summaryHTML = '';
+            let totalItems = 0;
             
             for (const category in currentTally) {
-                let categoryTotal = 0;
-                for (const item in currentTally[category]) {
-                    const itemData = currentTally[category][item];
+                for (const key in currentTally[category]) {
+                    const itemData = currentTally[category][key];
                     const totalQuantity = itemData.quantity + itemData.manualAdjust;
-                    categoryTotal += totalQuantity * itemData.price;
+                    grandTotal += totalQuantity * itemData.price;
+                    totalItems += totalQuantity;
                 }
-                grandTotal += categoryTotal;
-                summaryHTML += `<p><strong>${category.charAt(0).toUpperCase() + category.slice(1)} Total:</strong> ${categoryTotal} SAR</p>`;
             }
             
-            summaryHTML += `<h3>Grand Total: ${grandTotal} SAR</h3>`;
-            summaryHTML += `<p><strong>Total Orders Processed:</strong> ${specialRequests.length} customers with special requests</p>`;
-            summaryDiv.innerHTML = summaryHTML;
+            document.getElementById('grandTotal').textContent = `${grandTotal} SAR`;
         }
 
         // Initialize on page load
         initializeTally();
         updateDisplay();
+        
+        // Add drag and drop functionality
+        const uploadArea = document.querySelector('.upload-area');
+        const fileInput = document.getElementById('csvFile');
+        
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.backgroundColor = '#d6eaf8';
+            uploadArea.style.borderColor = '#2980b9';
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.backgroundColor = '#ecf0f1';
+            uploadArea.style.borderColor = '#3498db';
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.backgroundColor = '#ecf0f1';
+            uploadArea.style.borderColor = '#3498db';
+            
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                processCSV();
+            }
+        });
     </script>
 </body>
 </html>

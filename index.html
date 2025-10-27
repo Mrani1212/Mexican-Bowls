@@ -15,6 +15,8 @@
         th { background-color: #f2f2f2; }
         input[type="number"] { width: 60px; }
         .manual-edit { background-color: #fffacd; }
+        .special-requests { grid-column: 1 / -1; }
+        .request-row { margin-bottom: 10px; padding: 10px; border: 1px solid #eee; }
     </style>
 </head>
 <body>
@@ -82,6 +84,13 @@
                 </table>
             </div>
 
+            <div class="special-requests category">
+                <h2>Special Requests & Allergies</h2>
+                <div id="specialRequestsList">
+                    <!-- Will be populated by JavaScript -->
+                </div>
+            </div>
+
             <div class="summary-category category">
                 <h2>Order Summary</h2>
                 <div id="orderSummary">
@@ -92,25 +101,25 @@
     </div>
 
     <script>
-        // Define your menu items and prices
+        // Define your menu items and prices - updated to match CSV headers exactly
         const menuItems = {
             bowls: {
                 'Basic Bowl - 20 SAR': 20,
-                'Regular Bowl (salsa + sour cream) - 25 SAR': 25,
-                'Large Combo Bowl - 35 SAR': 35,
+                'Regular Bowl (salsa + sour cream ) - 25 SAR': 25,
+                'Large Combo Bowl  - 35 SAR': 35,
                 'Mexican Rice (free alternative)': 0
             },
             burritos: {
                 'Burrito - 15 SAR': 15,
                 'Burrito Combo W/Sour Cream - 20 SAR': 20,
                 'Burrito Combo W/Salsa - 20 SAR': 20,
-                'Burrito Combo 2 (sour cream + guac + salsa + iced tea) - 25 SAR': 25
+                'Burrito Combo 2( sour cream + guac + salsa + iced tea) 25 SAR': 25
             },
             extras: {
-                'Extra Protein - 5 SAR': 5,
+                'Extra Protein 5 SAR': 5,
                 'Chips and Salsa - 5 SAR': 5,
                 'Lemon Mint Iced Tea - 5 SAR': 5,
-                'Strawberry Mint Iced Tea': 0, // Price not specified in your data
+                'Strawberry Mint Iced Tea': 5, // Added price
                 'Guac - 6 SAR': 6,
                 'Salsa - 5 SAR': 5,
                 'Sour Cream - 4 SAR': 4,
@@ -124,6 +133,8 @@
             extras: {}
         };
 
+        let specialRequests = [];
+
         // Initialize tally with zero quantities
         function initializeTally() {
             for (const category in menuItems) {
@@ -135,6 +146,7 @@
                     };
                 }
             }
+            specialRequests = [];
         }
 
         function processCSV() {
@@ -162,6 +174,8 @@
             const lines = csvText.split('\n');
             const headers = lines[0].split(',').map(header => header.trim());
             
+            console.log("Headers found:", headers); // Debug log
+            
             // Process each order (skip header row)
             for (let i = 1; i < lines.length; i++) {
                 if (lines[i].trim() === '') continue;
@@ -175,8 +189,20 @@
                 });
                 
                 // Count items in this order
-                countOrderItems(order);
+                countOrderItems(order, headers);
+                
+                // Collect special requests
+                if (order['Special Requests (custom order, allergies, etc)'] && 
+                    order['Special Requests (custom order, allergies, etc)'].trim() !== '') {
+                    specialRequests.push({
+                        name: order['Name:'] || 'Unknown',
+                        phone: order['Phone:'] || 'Unknown',
+                        request: order['Special Requests (custom order, allergies, etc)']
+                    });
+                }
             }
+            
+            console.log("Final tally:", currentTally); // Debug log
         }
 
         function parseCSVLine(line) {
@@ -201,36 +227,45 @@
             return result;
         }
 
-        function countOrderItems(order) {
-            // Count bowl options
-            for (const bowl in menuItems.bowls) {
-                const bowlHeader = `Bowl Options [${bowl}]`;
-                if (order[bowlHeader] && order[bowlHeader].trim() !== '') {
-                    currentTally.bowls[bowl].quantity++;
+        function countOrderItems(order, headers) {
+            // Debug: Log what we're checking
+            console.log("Processing order:", order);
+            
+            // Count all items by checking each header
+            headers.forEach(header => {
+                const value = order[header];
+                
+                if (value && value.trim() !== '' && !isNaN(value) && parseInt(value) > 0) {
+                    // This is a quantity field with a number
+                    const quantity = parseInt(value);
+                    
+                    // Check which category this header belongs to
+                    for (const category in menuItems) {
+                        for (const item in menuItems[category]) {
+                            // Create the expected header for this item
+                            let expectedHeader;
+                            if (category === 'bowls' || category === 'burritos') {
+                                expectedHeader = `Bowl Options [${item}]`;
+                            } else {
+                                expectedHeader = `Extras [${item}]`;
+                            }
+                            
+                            if (header === expectedHeader) {
+                                currentTally[category][item].quantity += quantity;
+                                console.log(`Added ${quantity} to ${item}`); // Debug log
+                                break;
+                            }
+                        }
+                    }
                 }
-            }
-
-            // Count burrito options
-            for (const burrito in menuItems.burritos) {
-                const burritoHeader = `Bowl Options [${burrito}]`;
-                if (order[burritoHeader] && order[burritoHeader].trim() !== '') {
-                    currentTally.burritos[burrito].quantity++;
-                }
-            }
-
-            // Count extras
-            for (const extra in menuItems.extras) {
-                const extraHeader = `Extras [${extra}]`;
-                if (order[extraHeader] && order[extraHeader].trim() !== '') {
-                    currentTally.extras[extra].quantity++;
-                }
-            }
+            });
         }
 
         function updateDisplay() {
             updateCategoryTable('bowls', 'bowlTally');
             updateCategoryTable('burritos', 'burritoTally');
             updateCategoryTable('extras', 'extrasTally');
+            updateSpecialRequests();
             updateOrderSummary();
         }
 
@@ -271,6 +306,25 @@
             tbody.appendChild(totalRow);
         }
 
+        function updateSpecialRequests() {
+            const requestsDiv = document.getElementById('specialRequestsList');
+            requestsDiv.innerHTML = '';
+            
+            if (specialRequests.length === 0) {
+                requestsDiv.innerHTML = '<p>No special requests</p>';
+                return;
+            }
+            
+            specialRequests.forEach(request => {
+                const requestDiv = document.createElement('div');
+                requestDiv.className = 'request-row';
+                requestDiv.innerHTML = `
+                    <strong>${request.name}</strong> (${request.phone}): ${request.request}
+                `;
+                requestsDiv.appendChild(requestDiv);
+            });
+        }
+
         function updateManualAdjust(category, item, value) {
             currentTally[category][item].manualAdjust = parseInt(value) || 0;
             updateDisplay();
@@ -293,6 +347,7 @@
             }
             
             summaryHTML += `<h3>Grand Total: ${grandTotal} SAR</h3>`;
+            summaryHTML += `<p><strong>Total Orders Processed:</strong> ${specialRequests.length} customers with special requests</p>`;
             summaryDiv.innerHTML = summaryHTML;
         }
 

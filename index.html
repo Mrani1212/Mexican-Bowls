@@ -355,7 +355,7 @@
     </div>
 
     <script>
-        // Define your menu items and prices - using simplified keys for internal use
+        // Define your menu items and prices
         const menuItems = {
             bowls: {
                 'basic_bowl': { name: 'Basic Bowl - 20 SAR', price: 20 },
@@ -454,7 +454,7 @@
             const lines = csvText.split('\n');
             const headers = lines[0].split(',').map(header => header.trim());
             
-            console.log("Headers found:", headers); // Debug log
+            console.log("Headers found:", headers);
             
             // Process each order (skip header row)
             for (let i = 1; i < lines.length; i++) {
@@ -468,7 +468,7 @@
                     order[header] = values[index] ? values[index].trim() : '';
                 });
                 
-                console.log("Processing order:", order); // Debug log
+                console.log("Processing order:", order);
                 
                 // Count items in this order using header mappings
                 countOrderItems(order);
@@ -484,8 +484,8 @@
                 }
             }
             
-            console.log("Final tally:", currentTally); // Debug log
-            console.log("Special requests:", specialRequests); // Debug log
+            console.log("Final tally:", currentTally);
+            console.log("Special requests:", specialRequests);
         }
 
         function parseCSVLine(line) {
@@ -521,7 +521,7 @@
                     const quantity = parseFloat(value);
                     if (!isNaN(quantity) && quantity > 0) {
                         currentTally[mapping.category][mapping.key].quantity += quantity;
-                        console.log(`Added ${quantity} to ${mapping.category}.${mapping.key}`); // Debug log
+                        console.log(`Added ${quantity} to ${mapping.category}.${mapping.key}`);
                     }
                 }
             }
